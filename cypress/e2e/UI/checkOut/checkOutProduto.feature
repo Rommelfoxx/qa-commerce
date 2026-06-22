@@ -2,7 +2,7 @@ Feature: Checkout Simples
 
   Background:
     Given que o carrinho contém produtos e a cliente está na página de checkout
-
+    @smoke @regressao
     Scenario Outline: Checkout concluído sem criação de conta, em qualquer forma de pagamento
 
 
@@ -18,7 +18,7 @@ Feature: Checkout Simples
             | boleto             |
             | pix                |
 
-
+    @regressao
     Scenario Outline: Checkout concluído com criação de conta, em qualquer forma de pagamento
 
         And o cliente preencheu todos os dados obrigatórios de entrega
