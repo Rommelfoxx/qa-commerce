@@ -5,8 +5,8 @@ import Menu from '../../../pages/Menu'
 
 
 Given('que o cliente está na página inicial', () => {
-    HomePage.visit()
     cy.intercept('GET', 'http://localhost:3000/api/carrinho/1').as('carrinho')
+    HomePage.visit()
     cy.wait('@carrinho')
     cy.deletarCarrinhoAPI()
 })

@@ -7,9 +7,11 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '24'
   # Evita crash do servidor quando o pacote 'open' não encontra browser no CI
   NODE_OPTIONS: '--unhandled-rejections=warn'
+  # Desativa gravação de vídeo no CI (não há display)
+  CYPRESS_VIDEO: 'false'
 
 jobs:
   # ─── Testes de API ────────────────────────────────────────────────────────────
@@ -50,20 +52,12 @@ jobs:
       - name: Executar testes de API
         run: npx cypress run --spec "cypress/e2e/API/**/*.cy.js"
 
-      - name: Upload screenshots (falhas)
+      - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: screenshots-api
           path: cypress/screenshots/
-          retention-days: 7
-
-      - name: Upload vídeos
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: videos-api
-          path: cypress/videos/
           retention-days: 7
 
   # ─── Testes de UI (BDD/Cucumber) ─────────────────────────────────────────────
@@ -107,18 +101,10 @@ jobs:
       - name: Executar testes UI — Checkout
         run: npx cypress run --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
 
-      - name: Upload screenshots (falhas)
+      - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: screenshots-ui
           path: cypress/screenshots/
-          retention-days: 7
-
-      - name: Upload vídeos
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: videos-ui
-          path: cypress/videos/
           retention-days: 7
