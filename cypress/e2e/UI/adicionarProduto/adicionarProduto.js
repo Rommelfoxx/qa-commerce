@@ -11,9 +11,9 @@ Given('que o cliente está na página inicial', () => {
     cy.deletarCarrinhoAPI()
 })
 
-When('ele adiciona {string} de "1" ao carrinho', (quantidade) => {
-    HomePage.productQuantity('1').should('exist').clear().type(quantidade)
-    HomePage.productList('1').should('exist').click()
+When('ele adiciona {string} de {string} ao carrinho', (quantidade,produto) => {
+    HomePage.productQuantity(produto).should('exist').clear().type(quantidade)
+    HomePage.productList(produto).should('exist').click()
 })
 
 Then('o carrinho exibe 1 produto com quantidade {string} e total {string}', (quantidade, total) => {

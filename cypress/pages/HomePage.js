@@ -1,8 +1,10 @@
 class HomePage {
 
     //Seletores
-    productList(productNumber) { return cy.get(`[ data-id="${productNumber}"]`) }
-    productQuantity(productNumber) { return cy.get(`[id="quantity-${productNumber}"]`) }
+    //botao
+    productList(productName) { return cy.contains('.card',productName).find('button.add-to-cart') }
+    //inputField
+    productQuantity(productName) { return cy.contains('.card',productName).find('input[type="number"]') }
     //Navegação 
     visit() {
         cy.visit('http://localhost:3000/')
