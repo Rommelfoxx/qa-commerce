@@ -9,7 +9,6 @@ on:
 env:
   NODE_VERSION: '24'
   NODE_OPTIONS: '--unhandled-rejections=warn'
-  CYPRESS_VIDEO: 'false'
 
 jobs:
   # ─── Testes de API ────────────────────────────────────────────────────────────
@@ -56,6 +55,14 @@ jobs:
         with:
           name: screenshots-api
           path: cypress/screenshots/
+          retention-days: 7
+
+      - name: Upload vídeos (somente em falha)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: videos-api
+          path: cypress/videos/
           retention-days: 7
 
   # ─── Testes de UI (BDD/Cucumber) ─────────────────────────────────────────────
@@ -108,4 +115,12 @@ jobs:
         with:
           name: screenshots-ui
           path: cypress/screenshots/
+          retention-days: 7
+
+      - name: Upload vídeos (somente em falha)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: videos-ui
+          path: cypress/videos/
           retention-days: 7
