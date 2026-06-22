@@ -129,6 +129,17 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-#imagem 
+#imagem
 *.png
+
+# Banco de dados SQLite (gerado em runtime)
+*.db
+
+# Artefatos Cypress
+cypress/screenshots/
+cypress/videos/
+cypress/results/
+
+# Cache firecrawl
+.firecrawl/
 

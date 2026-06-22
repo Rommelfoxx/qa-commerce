@@ -1,0 +1,73 @@
+stages:
+  - install
+  - test
+
+variables:
+  NODE_VERSION: "20"
+  CYPRESS_BASE_URL: "http://localhost:3000"
+  CYPRESS_API_URL: "http://localhost:3000/api"
+
+# ─── Cache de dependências ────────────────────────────────────────────────────
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+    - ~/.cache/Cypress/
+
+# ─── Stage: install ───────────────────────────────────────────────────────────
+install:
+  stage: install
+  image: node:${NODE_VERSION}
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+
+# ─── Template base para jobs com Cypress ─────────────────────────────────────
+.cypress-base:
+  stage: test
+  image: cypress/included:15.17.0
+  dependencies:
+    - install
+  before_script:
+    - node scripts/init_db.js
+    - node src/server.js &
+    - npx wait-on $CYPRESS_BASE_URL --timeout 30000
+  artifacts:
+    when: always
+    paths:
+      - cypress/screenshots/
+      - cypress/videos/
+    reports:
+      junit: cypress/results/*.xml
+    expire_in: 7 days
+
+# ─── Stage: test — API ────────────────────────────────────────────────────────
+test:api:
+  extends: .cypress-base
+  script:
+    - npx cypress run
+        --spec "cypress/e2e/API/**/*.cy.js"
+        --reporter junit
+        --reporter-options "mochaFile=cypress/results/api-[hash].xml"
+
+# ─── Stage: test — UI (BDD/Cucumber) ─────────────────────────────────────────
+test:ui:adicionarProduto:
+  extends: .cypress-base
+  script:
+    - npx cypress run
+        --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
+        --reporter junit
+        --reporter-options "mochaFile=cypress/results/ui-adicionar-[hash].xml"
+
+test:ui:checkout:
+  extends: .cypress-base
+  script:
+    - npx cypress run
+        --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
+        --reporter junit
+        --reporter-options "mochaFile=cypress/results/ui-checkout-[hash].xml"

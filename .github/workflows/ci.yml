@@ -1,0 +1,138 @@
+name: QA Commerce CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '24'
+  NODE_OPTIONS: '--unhandled-rejections=warn'
+
+jobs:
+  # ─── Testes de API ────────────────────────────────────────────────────────────
+  test-api:
+    name: Testes de API (Carrinho)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Cache binário do Cypress
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Inicializar banco de dados (estado limpo)
+        run: |
+          rm -f src/qa_commerce.db
+          node scripts/init_db.js
+
+      - name: Iniciar servidor em background
+        run: node src/server.js &
+
+      - name: Aguardar servidor estar disponível
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Executar testes de API
+        run: npx cypress run --spec "cypress/e2e/API/**/*.cy.js"
+
+      - name: Upload screenshots (somente em falha)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots-api
+          path: cypress/screenshots/
+          retention-days: 7
+
+      - name: Upload vídeos (somente em falha)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: videos-api
+          path: cypress/videos/
+          retention-days: 7
+
+  # ─── Testes de UI (BDD/Cucumber) ─────────────────────────────────────────────
+  test-ui:
+    name: Testes de UI (BDD Cucumber)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Cache binário do Cypress
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar versão do Chrome disponível
+        run: google-chrome --version
+
+      - name: Inicializar banco de dados (estado limpo)
+        run: |
+          rm -f src/qa_commerce.db
+          node scripts/init_db.js
+
+      - name: Iniciar servidor em background
+        run: node src/server.js &
+
+      - name: Aguardar servidor estar disponível
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Executar testes UI — Adicionar Produto
+        id: test-adicionar
+        continue-on-error: true
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
+
+      - name: Executar testes UI — Checkout
+        id: test-checkout
+        continue-on-error: true
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
+
+      - name: Verificar resultado dos testes UI
+        if: always()
+        run: |
+          if [ "${{ steps.test-adicionar.outcome }}" = "failure" ] || [ "${{ steps.test-checkout.outcome }}" = "failure" ]; then
+            echo "Uma ou mais suítes de teste falharam."
+            exit 1
+          fi
+
+      - name: Upload screenshots (somente em falha)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots-ui
+          path: cypress/screenshots/
+          retention-days: 7
+
+      - name: Upload vídeos (somente em falha)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: videos-ui
+          path: cypress/videos/
+          retention-days: 7
