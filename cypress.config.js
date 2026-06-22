@@ -16,5 +16,8 @@ module.exports = defineConfig({
 
       return config
     }
+  },
+  env:{
+    apiUrl: 'http://localhost:3000/api',
   }
 })

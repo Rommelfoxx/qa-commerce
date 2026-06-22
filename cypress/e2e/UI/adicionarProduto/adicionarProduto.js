@@ -1,14 +1,14 @@
 import { Given, When, Then, AfterAll } from '@badeball/cypress-cucumber-preprocessor'
-import HomePage from '../../pages/HomePage'
-import Cart from '../../pages/Cart'
-import Menu from '../../pages/Menu'
+import HomePage from '../../../pages/HomePage'
+import Cart from '../../../pages/Cart'
+import Menu from '../../../pages/Menu'
 
 
 Given('que o cliente está na página inicial', () => {
     HomePage.visit()
     cy.intercept('GET', 'http://localhost:3000/api/carrinho/1').as('carrinho')
     cy.wait('@carrinho')
-    cy.deletarCarrinho()
+    cy.deletarCarrinhoAPI()
 })
 
 When('ele adiciona {string} de "1" ao carrinho', (quantidade) => {

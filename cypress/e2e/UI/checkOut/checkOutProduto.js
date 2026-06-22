@@ -1,16 +1,12 @@
 import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor'
-import CheckOut from '../../pages/CheckOut'
-import Cart from '../../pages/Cart'
-import userFactory from '../../factories/userFactory'
-import cardFactory from '../../factories/cardFactory'
+import CheckOut from '../../../pages/CheckOut'
+import Cart from '../../../pages/Cart'
+import userFactory from '../../../factories/userFactory'
+import cardFactory from '../../../factories/cardFactory'
 
 
 Given('que o carrinho contém produtos e a cliente está na página de checkout', () => {
-    cy.deletarCarrinho()
-    cy.adicionarProdutoCarrinho("1", 1, 1)
-    Cart.visit()
-    Cart.CheckOutButton().click()
-    cy.wait(1000)
+    cy.paginaCheckOut()
 })
 Given('o cliente preencheu todos os dados obrigatórios de entrega', () => {
     const user = userFactory.createUser()

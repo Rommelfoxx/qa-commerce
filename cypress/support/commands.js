@@ -23,22 +23,14 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-Cypress.Commands.add('deletarCarrinho', () => {
-  cy.request({
-    method: 'DELETE',
-    url: 'http://localhost:3000/api/carrinho/1/1',
-  }).then((response) => {
-    expect(response.status).to.eq(200)
-  })
-})
+import CheckOut from '../pages/CheckOut'
+import Cart from '../pages/Cart'
 
-Cypress.Commands.add('adicionarProdutoCarrinho', (productId,quantity,userId) => {
-  cy.request({
-    method: 'POST',
-    url: 'http://localhost:3000/api/carrinho',
-    body:{productId,quantity,userId}
-  }).then((response) => {
-    // expect(response.status).to.eq(201)
-  })
-})
 
+//Limpa carrinho e adiciona produto para checkout
+Cypress.Commands.add('paginaCheckOut', () => {
+  cy.deletarCarrinhoAPI()
+  cy.adicionarProdutoCarrinhoAPI("1", 1, 1)
+  Cart.visit()
+  Cart.CheckOutButton().click()
+})
