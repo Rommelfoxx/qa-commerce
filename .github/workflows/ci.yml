@@ -104,10 +104,22 @@ jobs:
         run: npx wait-on http://localhost:3000 --timeout 30000
 
       - name: Executar testes UI — Adicionar Produto
+        id: test-adicionar
+        continue-on-error: true
         run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
 
       - name: Executar testes UI — Checkout
+        id: test-checkout
+        continue-on-error: true
         run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
+
+      - name: Verificar resultado dos testes UI
+        if: always()
+        run: |
+          if [ "${{ steps.test-adicionar.outcome }}" = "failure" ] || [ "${{ steps.test-checkout.outcome }}" = "failure" ]; then
+            echo "Uma ou mais suítes de teste falharam."
+            exit 1
+          fi
 
       - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
