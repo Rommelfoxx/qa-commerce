@@ -53,9 +53,12 @@ As dependências já estão incluídas no `package.json`. Basta rodar:
 npm install
 ```
 
-// Cucumber 
+Cucumber =
 npm install --save-dev @badeball/cypress-cucumber-preprocessor
 npm install --save-dev @bahmutov/cypress-esbuild-preprocessor
+
+Cypress-grep
+npm install --save-dev @cypress/grep
 
 
 ### Configuração (`cypress.config.js`)

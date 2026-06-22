@@ -79,23 +79,11 @@ jobs:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
-      - name: Instalar dependências do sistema (Electron/Cypress)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libgtk2.0-0t64 \
-            libgtk-3-0t64 \
-            libgbm1 \
-            libnotify-dev \
-            libnss3 \
-            libxss1 \
-            libasound2t64 \
-            libxtst6 \
-            xauth \
-            xvfb
-
       - name: Instalar dependências
         run: npm ci
+
+      - name: Verificar versão do Chrome disponível
+        run: google-chrome --version
 
       - name: Inicializar banco de dados (estado limpo)
         run: |
@@ -109,10 +97,10 @@ jobs:
         run: npx wait-on http://localhost:3000 --timeout 30000
 
       - name: Executar testes UI — Adicionar Produto
-        run: xvfb-run --auto-servernum npx cypress run --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
 
       - name: Executar testes UI — Checkout
-        run: xvfb-run --auto-servernum npx cypress run --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
 
       - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
