@@ -8,9 +8,7 @@ on:
 
 env:
   NODE_VERSION: '24'
-  # Evita crash do servidor quando o pacote 'open' não encontra browser no CI
   NODE_OPTIONS: '--unhandled-rejections=warn'
-  # Desativa gravação de vídeo no CI (não há display)
   CYPRESS_VIDEO: 'false'
 
 jobs:
@@ -81,6 +79,21 @@ jobs:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
+      - name: Instalar dependências do sistema (Electron/Cypress)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgtk2.0-0t64 \
+            libgtk-3-0t64 \
+            libgbm1 \
+            libnotify-dev \
+            libnss3 \
+            libxss1 \
+            libasound2t64 \
+            libxtst6 \
+            xauth \
+            xvfb
+
       - name: Instalar dependências
         run: npm ci
 
@@ -96,10 +109,10 @@ jobs:
         run: npx wait-on http://localhost:3000 --timeout 30000
 
       - name: Executar testes UI — Adicionar Produto
-        run: npx cypress run --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
+        run: xvfb-run --auto-servernum npx cypress run --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
 
       - name: Executar testes UI — Checkout
-        run: npx cypress run --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
+        run: xvfb-run --auto-servernum npx cypress run --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
 
       - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
