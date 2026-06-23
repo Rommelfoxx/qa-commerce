@@ -47,7 +47,7 @@ jobs:
         run: npx wait-on http://localhost:3000 --timeout 30000
 
       - name: Executar testes de API
-        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/API/api-carrinho.feature"
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/api/carrinho/api-carrinho.feature"
 
       - name: Mesclar relatórios JSON
         if: always()
@@ -152,12 +152,12 @@ jobs:
       - name: Executar testes UI — Adicionar Produto
         id: test-adicionar
         continue-on-error: true
-        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature"
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/ui/adicionarProduto/adicionarProduto.feature"
 
       - name: Executar testes UI — Checkout
         id: test-checkout
         continue-on-error: true
-        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/ui/checkOut/checkOutProduto.feature"
 
       - name: Mesclar relatórios JSON
         if: always()
