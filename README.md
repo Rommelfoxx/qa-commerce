@@ -71,7 +71,6 @@ Para instalar manualmente caso necessário:
 ```
 npm install --save-dev @badeball/cypress-cucumber-preprocessor
 npm install --save-dev @bahmutov/cypress-esbuild-preprocessor
-npm install --save-dev @cypress/grep
 ```
 
 ### Configuração (`cypress.config.js`)
@@ -101,11 +100,18 @@ npx cypress run --spec "cypress/e2e/UI/adicionarProduto/adicionarProduto.feature
 npx cypress run --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
 ```
 
-Filtrar por tag (usando `@cypress/grep`):
+Filtrar por tag em arquivos `.feature` (BDD/Cucumber):
 ```
-npx cypress run --env grep=@smoke
-npx cypress run --env grep=@regressao
+npx cypress run --env tags=@api
+npx cypress run --env tags=@smoke
+npx cypress run --env tags=@regressao
+npx cypress run --env tags="@api and @regressao"
+npx cypress run --env tags="@smoke or @api"
+npx cypress run --env tags="not @regressao"
 ```
+
+> **Atenção:** arquivos `.feature` usam `--env tags=` (Cucumber preprocessor).  
+> Arquivos `.cy.js` usam `--env grepTags=` (`@cypress/grep`). Os dois sistemas são independentes.
 
 ### Estrutura dos testes
 

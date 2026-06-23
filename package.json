@@ -7,7 +7,13 @@
     "start": "node src/server.js",
     "db": "node scripts/init_db.js",
     "cypress:run": "cypress run",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:api": "cypress run --spec 'cypress/e2e/API/'",
+    "cypress:e2e": "cypress run --spec 'cypress/e2e/UI/'",
+    "report:merge": "mochawesome-merge cypress/reports/mocha/.jsons/*.json > cypress/reports/mocha/merged.json",
+    "report:generate": "marge cypress/reports/mocha/merged.json --reportDir cypress/reports/html --inline",
+    "report:clean": "rmdir /s /q cypress\\reports",
+    "test:api:report": "npm run cypress:api && npm run report:merge && npm run report:generate"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +33,13 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
-    "@cypress/grep": "^6.0.2"
+    "@cypress/grep": "^6.0.2",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2"
+  },
+  "cypress-cucumber-preprocessor": {
+    "filterSpecs": true,
+    "omitFiltered": true
   }
 }

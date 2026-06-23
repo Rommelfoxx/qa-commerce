@@ -5,31 +5,31 @@ Feature: API Carrinho
   Background:
     Given o carrinho do usuário está vazio
 
-  @regressao
+  
   Scenario: Listar carrinho vazio retorna status 200
     When eu listo os itens do carrinho
     Then a resposta deve ter status 200
 
-  @regressao
+  
   Scenario: Listar carrinho com produto retorna status 200
     Given eu adicionei um produto ao carrinho
     When eu listo os itens do carrinho
     Then a resposta deve ter status 200
 
-  @regressao
+  
   Scenario: Adicionar produto ao carrinho retorna 201
     When eu adiciono um produto ao carrinho
     Then a resposta deve ter status 201
     And a resposta deve conter a propriedade "message"
 
-  @regressao
+  
   Scenario: Remover item específico do carrinho retorna 200
     Given eu adicionei um produto ao carrinho
     When eu removo o item específico do carrinho
     Then a resposta deve ter status 200
     And a resposta deve conter a propriedade "message"
 
-  @regressao
+ 
   Scenario: Limpar todos os itens do carrinho retorna 200
     Given eu adicionei um produto ao carrinho
     When eu limpo o carrinho
