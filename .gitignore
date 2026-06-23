@@ -143,3 +143,5 @@ cypress/results/
 # Cache firecrawl
 .firecrawl/
 
+#relatorio 
+cypress/reports/

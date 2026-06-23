@@ -49,6 +49,52 @@ jobs:
       - name: Executar testes de API
         run: npx cypress run --browser chrome --headless --spec "cypress/e2e/API/api-carrinho.feature"
 
+      - name: Mesclar relatórios JSON
+        if: always()
+        run: |
+          if ls cypress/reports/mocha/.jsons/*.json 1> /dev/null 2>&1; then
+            npm run report:merge
+          else
+            echo "Nenhum relatório JSON encontrado para mesclar."
+          fi
+
+      - name: Gerar relatório HTML
+        if: always()
+        run: |
+          if [ -f cypress/reports/mocha/merged.json ]; then
+            npm run report:generate
+          else
+            echo "merged.json não encontrado, pulando geração de HTML."
+          fi
+
+      - name: Upload relatório Mochawesome
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mochawesome-report-api
+          path: cypress/reports/html/
+          retention-days: 7
+          
+      - name: Publicar resumo do relatório no GitHub Actions
+        if: always()
+        run: |
+          echo "## 📊 Mochawesome Test Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          node -e "
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('cypress/reports/mocha/merged.json'));
+          const { passes, failures, pending, duration } = report.stats;
+          const total = passes + failures + pending;
+          const status = failures === 0 ? '✅ Passed' : '❌ Failed';
+          console.log('| Total | ' + total + ' |');
+          console.log('| ✅ Passed | ' + passes + ' |');
+          console.log('| ❌ Failed | ' + failures + ' |');
+          console.log('| ⏱ Duration | ' + (duration / 1000).toFixed(1) + 's |');
+          console.log('| Status | ' + status + ' |');
+          " >> $GITHUB_STEP_SUMMARY
+
       - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
         if: failure()
@@ -112,6 +158,52 @@ jobs:
         id: test-checkout
         continue-on-error: true
         run: npx cypress run --browser chrome --headless --spec "cypress/e2e/UI/checkOut/checkOutProduto.feature"
+
+      - name: Mesclar relatórios JSON
+        if: always()
+        run: |
+          if ls cypress/reports/mocha/.jsons/*.json 1> /dev/null 2>&1; then
+            npm run report:merge
+          else
+            echo "Nenhum relatório JSON encontrado para mesclar."
+          fi
+
+      - name: Gerar relatório HTML
+        if: always()
+        run: |
+          if [ -f cypress/reports/mocha/merged.json ]; then
+            npm run report:generate
+          else
+            echo "merged.json não encontrado, pulando geração de HTML."
+          fi
+
+      - name: Upload relatório Mochawesome
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mochawesome-report-ui
+          path: cypress/reports/html/
+          retention-days: 7
+
+      - name: Publicar resumo do relatório no GitHub Actions
+        if: always()
+        run: |
+          echo "## 📊 Mochawesome Test Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          node -e "
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('cypress/reports/mocha/merged.json'));
+          const { passes, failures, pending, duration } = report.stats;
+          const total = passes + failures + pending;
+          const status = failures === 0 ? '✅ Passed' : '❌ Failed';
+          console.log('| Total | ' + total + ' |');
+          console.log('| ✅ Passed | ' + passes + ' |');
+          console.log('| ❌ Failed | ' + failures + ' |');
+          console.log('| ⏱ Duration | ' + (duration / 1000).toFixed(1) + 's |');
+          console.log('| Status | ' + status + ' |');
+          " >> $GITHUB_STEP_SUMMARY
 
       - name: Verificar resultado dos testes UI
         if: always()
