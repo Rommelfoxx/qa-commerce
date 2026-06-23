@@ -40,7 +40,7 @@ When('eu limpo o carrinho', () => {
 
 //Then
 
-Then('a resposta deve ter status {status}', (status) => {
+Then('a resposta deve ter status {int}', (status) => {
     cy.get('@resposta').then((response) => {
         expect(response.status).to.eq(status)
     })
