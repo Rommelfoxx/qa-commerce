@@ -74,6 +74,26 @@ jobs:
           name: mochawesome-report-api
           path: cypress/reports/html/
           retention-days: 7
+          
+      - name: Publicar resumo do relatório no GitHub Actions
+        if: always()
+        run: |
+          echo "## 📊 Mochawesome Test Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          node -e "
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('cypress/reports/mocha/merged.json'));
+          const { passes, failures, pending, duration } = report.stats;
+          const total = passes + failures + pending;
+          const status = failures === 0 ? '✅ Passed' : '❌ Failed';
+          console.log('| Total | ' + total + ' |');
+          console.log('| ✅ Passed | ' + passes + ' |');
+          console.log('| ❌ Failed | ' + failures + ' |');
+          console.log('| ⏱ Duration | ' + (duration / 1000).toFixed(1) + 's |');
+          console.log('| Status | ' + status + ' |');
+          " >> $GITHUB_STEP_SUMMARY
 
       - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
