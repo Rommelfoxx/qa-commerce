@@ -267,6 +267,8 @@ Para testes manuais da API, importe o arquivo `collection-pm.json` no Postman. A
 
 ---
 
-## Autores
+## Autor
+
+**Vanderlan Alves**
 
 Parceria: **Fábio Araújo**, **Bruna Emerich** e **Tamara Fontanella**
