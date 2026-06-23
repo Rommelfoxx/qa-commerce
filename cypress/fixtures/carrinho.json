@@ -1,0 +1,38 @@
+{
+  "usuario": {
+    "userId": 1
+  },
+  "produto": {
+    "productId": 1,
+    "quantity": 1
+  },
+  "cenarios": {
+    "adicionarComSucesso": {
+      "userId": 1,
+      "productId": 1,
+      "quantity": 1
+    },
+    "adicionarQuantidadeMaior": {
+      "userId": 1,
+      "productId": 1,
+      "quantity": 2
+    },
+    "payloadSemUserId": {
+      "productId": 1,
+      "quantity": 1
+    },
+    "payloadSemProductId": {
+      "userId": 1,
+      "quantity": 1
+    },
+    "payloadSemQuantity": {
+      "userId": 1,
+      "productId": 1
+    }
+  },
+  "statusEsperados": {
+    "sucesso": 200,
+    "criado": 201,
+    "erroValidacao": [400, 422, 500]
+  }
+}

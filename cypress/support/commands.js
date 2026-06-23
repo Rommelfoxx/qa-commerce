@@ -29,8 +29,8 @@ import Cart from '../pages/Cart'
 
 //Limpa carrinho e adiciona produto para checkout
 Cypress.Commands.add('paginaCheckOut', () => {
-  cy.deletarCarrinhoAPI()
-  cy.adicionarProdutoCarrinhoAPI("1", 1, 1)
+  cy.limparCarrinhoAPI()
+  cy.fixture('carrinho').then((dados) => { cy.adicionarAoCarrinhoAPI(dados.cenarios.adicionarComSucesso)})
   Cart.visit()
   Cart.CheckOutButton().click()
 })

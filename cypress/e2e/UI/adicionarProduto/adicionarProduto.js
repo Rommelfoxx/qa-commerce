@@ -8,7 +8,7 @@ Given('que o cliente está na página inicial', () => {
     cy.intercept('GET', 'http://localhost:3000/api/carrinho/1').as('carrinho')
     HomePage.visit()
     cy.wait('@carrinho')
-    cy.deletarCarrinhoAPI()
+    cy.limparCarrinhoAPI()
 })
 
 When('ele adiciona {string} de {string} ao carrinho', (quantidade,produto) => {

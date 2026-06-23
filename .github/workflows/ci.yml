@@ -47,7 +47,7 @@ jobs:
         run: npx wait-on http://localhost:3000 --timeout 30000
 
       - name: Executar testes de API
-        run: npx cypress run --spec "cypress/e2e/API/**/*.cy.js"
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/API/api-carrinho.feature"
 
       - name: Upload screenshots (somente em falha)
         uses: actions/upload-artifact@v4
