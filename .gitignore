@@ -145,3 +145,8 @@ cypress/results/
 
 #relatorio 
 cypress/reports/
+#playwrightMCP
+.playwright-mcp/
+
+#MD
+*.md
